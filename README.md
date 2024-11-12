@@ -1,5 +1,4 @@
 # Little Shop - Coupon Codes | Final Project | Frontend Starter Repo
-Testing the pull request 123
 
 This Vite Little Shop - Coupon Codes FE Final Project Boilerplate is built to consume and display the data from the BE Rails API built in the Mod 2 Final Project.  
 

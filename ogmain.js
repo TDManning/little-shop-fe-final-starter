@@ -1,7 +1,3 @@
-import './style.css'
-import {fetchData, postData, deleteData, editData} from './apiCalls'
-import {showStatus} from './errorHandling'
-
 //Sections, buttons, text
 const couponsView = document.querySelector("#coupons-view")
 const itemsView = document.querySelector("#items-view")
@@ -206,27 +202,24 @@ function displayMerchants(merchants) {
     })
 }
 
-function displayMerchantCoupons(coupons) {
-  show([couponsView]);
-  hide([merchantsView, itemsView])
-
-  if (coupons.length === 0) {
-    couponsView.innerHTML = `<p>No coupons available for this merchant.</p>`
-    return;
-  }
-  
-  coupons.forEach(coupon => {
-    couponsView.innerHTML += `
-      <article class="coupon" id="coupon-${coupon.id}">
-        <h2>${coupon.attributes.name}</h2>
-        <p>Code: <strong>${coupon.attributes.code}</strong></p>
-        <p>Discount: ${coupon.attributes.discount_value} ${coupon.attributes.discount_type === 'percent' ? '%' : 'dollars'}</p>
-        <p>Status: ${coupon.attributes.active ? 'Active' : 'Inactive'}</p>
-        <p>Merchant: ${coupon.attributes.merchant_name}</p>
-        <p>Usage Count: ${coupon.attributes.usage_count}</p>
-      </article>
-    `
-  })
+function displayAddedMerchant(merchant) {
+      merchantsView.insertAdjacentHTML('beforeend', 
+      `<article class="merchant" id="merchant-${merchant.id}">
+          <h3 class="merchant-name">${merchant.attributes.name}</h3>
+          <div class="merchant-options">
+            <button class="view-merchant-coupons">View Coupons</button>
+            <button class="view-merchant-items">View Items</button>
+            <button class="edit-merchant">Edit</button>
+            <input class="edit-merchant-input hidden" name="edit-merchant" type="text">
+            <button class="submit-merchant-edits hidden">
+              Submit Edits
+            </button>
+            <button class="discard-merchant-edits hidden">
+              Discard Edits
+            </button>
+            <button class="delete-merchant">Delete</button>
+          </div>
+        </article>`)
 }
 
 function displayMerchantItems(event) {
@@ -236,33 +229,26 @@ function displayMerchantItems(event) {
 }
 
 function getMerchantCoupons(event) {
-  let merchantId = event.target.closest("article").id.split('-')[1];
+  let merchantId = event.target.closest("article").id.split('-')[1]
+  console.log("Merchant ID:", merchantId)
 
-  showingText.innerText = `All Coupons for Merchant #${merchantId}`
-  addNewButton.classList.add('hidden')
+  fetchData(`merchants/${merchantId}`)
+  .then(couponData => {
+    console.log("Coupon data from fetch:", couponData)
+    displayMerchantCoupons(couponData);
+  })
+}
 
-  fetchData(`merchants/${merchantId}/coupons`)
-    .then(response => {
-      if (response && response.data && response.data.length > 0) {
-        displayMerchantCoupons(response.data);
-      } else {
-        displayMerchantCoupons([]); 
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching coupons:', error);
-      displayErrorMessage('Failed to fetch coupons. Please try again.');
-    });
+function displayMerchantCoupons(coupons) {
+  show([couponsView])
+  hide([merchantsView, itemsView])
+
+  couponsView.innerHTML = `
+    <p>Coupon data will go here.</p>
+  `
 }
 
 //Helper Functions
-
-function displayErrorMessage(message) {
-  couponsView.innerHTML = `<p class="error-message">${message}</p>`
-  show([couponsView])
-  hide([merchantsView, itemsView])
-}
-
 function show(elements) {
   elements.forEach(element => {
     element.classList.remove('hidden')
