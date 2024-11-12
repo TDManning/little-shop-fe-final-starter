@@ -206,26 +206,6 @@ function displayMerchants(merchants) {
     })
 }
 
-function displayAddedMerchant(merchant) {
-      merchantsView.insertAdjacentHTML('beforeend', 
-      `<article class="merchant" id="merchant-${merchant.id}">
-          <h3 class="merchant-name">${merchant.attributes.name}</h3>
-          <div class="merchant-options">
-            <button class="view-merchant-coupons">View Coupons</button>
-            <button class="view-merchant-items">View Items</button>
-            <button class="edit-merchant">Edit</button>
-            <input class="edit-merchant-input hidden" name="edit-merchant" type="text">
-            <button class="submit-merchant-edits hidden">
-              Submit Edits
-            </button>
-            <button class="discard-merchant-edits hidden">
-              Discard Edits
-            </button>
-            <button class="delete-merchant">Delete</button>
-          </div>
-        </article>`)
-}
-
 function displayMerchantCoupons(coupons) {
   show([couponsView]);
   hide([merchantsView, itemsView])
@@ -257,21 +237,22 @@ function displayMerchantItems(event) {
 
 function getMerchantCoupons(event) {
   let merchantId = event.target.closest("article").id.split('-')[1];
-  console.log("Fetching coupons for Merchant ID:", merchantId);
+
+  showingText.innerText = `All Coupons for Merchant #${merchantId}`
+  addNewButton.classList.add('hidden')
 
   fetchData(`merchants/${merchantId}/coupons`)
-    .then(couponData => {
-
-      if (couponData && couponData.data && couponData.data.length > 0) {
-        displayMerchantCoupons(couponData.data);
+    .then(response => {
+      if (response && response.data && response.data.length > 0) {
+        displayMerchantCoupons(response.data);
       } else {
-        displayMerchantCoupons([])
+        displayMerchantCoupons([]); 
       }
     })
-    .catch(err => {
-      console.error('Error fetching coupons:', err)
-      displayErrorMessage('Failed to fetch coupons. Please try again.')
-    })
+    .catch(error => {
+      console.error('Error fetching coupons:', error);
+      displayErrorMessage('Failed to fetch coupons. Please try again.');
+    });
 }
 
 //Helper Functions
