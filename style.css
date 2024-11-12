@@ -1,11 +1,11 @@
 /* VARIABLES */
 :root {
---red: #FF6F61;
---blue: #118AB2;
---beige: #f1efe6;
---charcoal: #333;
---green: #28a745;
---dk-green: #218838;
+  --red: #FF6F61;
+  --blue: #118AB2;
+  --beige: #f1efe6;
+  --charcoal: #333;
+  --green: #28a745;
+  --dk-green: #218838;
 }
 
 /* GENERAL */
@@ -131,8 +131,8 @@ h3 {
   color: var(--blue);
 }
 
-/* MERCHANT + ITEM CARDS */
-.merchant, .item {
+/* MERCHANT + ITEM + COUPON CARDS */
+.merchant {
   align-items: center;
   background-color: #fff;
   border-radius: 8px;
@@ -144,28 +144,54 @@ h3 {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+
+.item, .coupon {
+  display: flex;
+  flex-direction: row; 
+  align-items: center;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 20px;
+  width: 30%; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
 .merchant:hover,
-.item:hover {
+.item:hover,
+.coupon:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   transform: translateY(-5px);
 }
 
-.items-view {
+.items-view, .coupons-view {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  gap: 20px; 
+  padding: 20px;
 }
 
-.item {
+.item, .coupon {
   flex-direction: column;
   text-align: center;
   width: 30%;
+  margin: 10px; 
 }
 
 .item p,
-.item h2 {
+.item h2,
+.coupon p,
+.coupon h2 {
   margin: 5px;
-} 
+}
+
+.coupon h2 {
+  font-size: 1.2em;
+  color: var(--charcoal);
+}
 
 .merchant-options {
   display: flex;
@@ -209,3 +235,13 @@ h3 {
 .hidden {
   display: none;
 }
+
+.coupons-view {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+

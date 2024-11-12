@@ -1,7 +1,3 @@
-import './style.css'
-import {fetchData, postData, deleteData, editData} from './apiCalls'
-import {showStatus} from './errorHandling'
-
 //Sections, buttons, text
 const couponsView = document.querySelector("#coupons-view")
 const itemsView = document.querySelector("#items-view")
@@ -226,29 +222,6 @@ function displayAddedMerchant(merchant) {
         </article>`)
 }
 
-function displayMerchantCoupons(coupons) {
-  show([couponsView]);
-  hide([merchantsView, itemsView])
-
-  if (coupons.length === 0) {
-    couponsView.innerHTML = `<p>No coupons available for this merchant.</p>`
-    return;
-  }
-  
-  coupons.forEach(coupon => {
-    couponsView.innerHTML += `
-      <article class="coupon" id="coupon-${coupon.id}">
-        <h2>${coupon.attributes.name}</h2>
-        <p>Code: <strong>${coupon.attributes.code}</strong></p>
-        <p>Discount: ${coupon.attributes.discount_value} ${coupon.attributes.discount_type === 'percent' ? '%' : 'dollars'}</p>
-        <p>Status: ${coupon.attributes.active ? 'Active' : 'Inactive'}</p>
-        <p>Merchant: ${coupon.attributes.merchant_name}</p>
-        <p>Usage Count: ${coupon.attributes.usage_count}</p>
-      </article>
-    `
-  })
-}
-
 function displayMerchantItems(event) {
   let merchantId = event.target.closest("article").id.split('-')[1]
   const filteredMerchantItems = filterByMerchant(merchantId)
@@ -256,32 +229,26 @@ function displayMerchantItems(event) {
 }
 
 function getMerchantCoupons(event) {
-  let merchantId = event.target.closest("article").id.split('-')[1];
-  console.log("Fetching coupons for Merchant ID:", merchantId);
+  let merchantId = event.target.closest("article").id.split('-')[1]
+  console.log("Merchant ID:", merchantId)
 
-  fetchData(`merchants/${merchantId}/coupons`)
-    .then(couponData => {
+  fetchData(`merchants/${merchantId}`)
+  .then(couponData => {
+    console.log("Coupon data from fetch:", couponData)
+    displayMerchantCoupons(couponData);
+  })
+}
 
-      if (couponData && couponData.data && couponData.data.length > 0) {
-        displayMerchantCoupons(couponData.data);
-      } else {
-        displayMerchantCoupons([])
-      }
-    })
-    .catch(err => {
-      console.error('Error fetching coupons:', err)
-      displayErrorMessage('Failed to fetch coupons. Please try again.')
-    })
+function displayMerchantCoupons(coupons) {
+  show([couponsView])
+  hide([merchantsView, itemsView])
+
+  couponsView.innerHTML = `
+    <p>Coupon data will go here.</p>
+  `
 }
 
 //Helper Functions
-
-function displayErrorMessage(message) {
-  couponsView.innerHTML = `<p class="error-message">${message}</p>`
-  show([couponsView])
-  hide([merchantsView, itemsView])
-}
-
 function show(elements) {
   elements.forEach(element => {
     element.classList.remove('hidden')
